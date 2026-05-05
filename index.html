@@ -227,6 +227,53 @@ function renderCompatList(list){
   `;
 }
 
+function selectHero(name){
+  currentHero = name;
+  const hero = HEROES.find(h => h.name === name);
+
+  if(hero.categories.length === 3){
+    document.getElementById('heroDetails').innerHTML = `
+      <h3>${hero.name}</h3>
+      <div>
+        ${hero.categories.map(c =>
+          `<span class="tag ${c}">${c}</span>`
+        ).join('')}
+      </div>
+      <h4>Fits With:</h4>
+      Go nuts dude
+    `;
+    return;
+  }
+
+  const related = HEROES.filter(h =>
+    h.name !== hero.name &&
+    h.categories.some(c => hero.categories.includes(c))
+  );
+
+  const tanks = related.filter(h => h.role === "Tank");
+  const damages = related.filter(h => h.role === "Damage");
+  const supports = related.filter(h => h.role === "Support");
+
+  document.getElementById('heroDetails').innerHTML = `
+    <h3>${hero.name}</h3>
+
+    <div>
+      ${hero.categories.map(c =>
+        `<span class="tag ${c}">${c}</span>`
+      ).join('')}
+    </div>
+
+    <h4>Fits With Tanks:</h4>
+    ${renderCompatList(tanks)}
+
+    <h4>Fits With Damages:</h4>
+    ${renderCompatList(damages)}
+
+    <h4>Fits With Supports:</h4>
+    ${renderCompatList(supports)}
+  `;
+}
+
 function renderHeroes(){
   const grid = document.getElementById('heroGrid');
   const mode = document.getElementById('sortMode').value;
