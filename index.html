@@ -59,7 +59,7 @@
 .full-width{
   grid-column:1 / -1;
 }
-}
+
   gap:20px;
   margin-top:20px;
 }
@@ -361,21 +361,32 @@ function toggleTeam(name, teamNum){
 
 function getDominant(team){
   const score = {
-    Brawl:0,
-    Dive:0,
-    Poke:0
+    Brawl: 0,
+    Dive: 0,
+    Poke: 0
   };
 
-  team.forEach(name=>{
-    const hero = HEROES.find(h=>h.name===name);
-    hero.categories.forEach(cat=>score[cat]++);
+  team.forEach(name => {
+    const hero = HEROES.find(h => h.name === name);
+
+    const count = hero.categories.length;
+
+    let value = 0;
+
+    if(count === 1) value = 1;
+    if(count === 2) value = 0.5;
+    if(count === 3) value = 0;
+
+    hero.categories.forEach(cat => {
+      score[cat] += value;
+    });
   });
 
-  const dominant = Object.keys(score).reduce((a,b)=>
+  const dominant = Object.keys(score).reduce((a,b) =>
     score[a] > score[b] ? a : b
   );
 
-  return {score, dominant};
+  return { score, dominant };
 }
 
 function analyzeMatchup(){
